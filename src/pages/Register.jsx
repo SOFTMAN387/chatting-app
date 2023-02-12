@@ -55,7 +55,7 @@ const Register = () => {
         photoURL:downloadURL,
       })
       await setDoc(doc(db,"userChats",res.user.uid),{ });
-      navigate("/");
+      navigate("/login");
     });
   }
 );
@@ -83,7 +83,7 @@ const Register = () => {
                 <button type='submit'>Sin Up</button>
                 {err && <span style={{color:'red'}}>Something Went Wrong...</span>}
             </form>
-                <p> You have an accout ? Login here..</p>
+                <p> You have an accout ?<Link to="/login">Login here..</Link></p>
         </div>
 
     </div>
