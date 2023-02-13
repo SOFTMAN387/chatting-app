@@ -3,7 +3,7 @@ import { AuthContext } from '../context/AuthContext';
 import { ChatContext } from '../context/ChatContext';
 import { db,storage} from '../firebase';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
-import { setDoc, doc, arrayUnion, Timestamp } from 'firebase/firestore';
+import {  updateDoc,doc, arrayUnion, Timestamp, serverTimestamp } from 'firebase/firestore';
 import { uuidv4 } from '@firebase/util';
 const Input = () => {
   const [text, setText] = useState("");
@@ -25,7 +25,7 @@ const Input = () => {
 
           getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
             // console.log('File available at', downloadURL);
-            await setDoc(doc(db, "chats", data.chatId), {
+            await updateDoc(doc(db, "chats", data.chatId), {
               messages: arrayUnion({
                 id: uuidv4(),
                 text,
@@ -39,7 +39,7 @@ const Input = () => {
         }
       );
     } else {
-      await setDoc(doc(db, "chats", data.chatId), {
+      await updateDoc(doc(db, "chats", data.chatId), {
         messages: arrayUnion({
           id: uuidv4(),
           text,
@@ -48,18 +48,36 @@ const Input = () => {
         }),
       });
     }
+
+    await updateDoc(doc(db,"userChats",currentUser.uid),{
+      [data.chatId+".lastMessage"]:{
+        text
+      },
+      [data.chatId+".date"]:serverTimestamp(),
+
+
+    });
+    await updateDoc(doc(db,"userChats",data.user.uid),{
+      [data.chatId+".lastMessage"]:{
+        text
+      },
+      [data.chatId+".date"]:serverTimestamp(),
+
+
+    });
     setImg(null);
     setText("");
   };
   return (
     <>
       <div className='input'>
-        <input type="text" placeholder='Type something...' onChange={(e) => setText(e.target.value)} />
+        <input type="text" placeholder='Type something...' onChange={(e) => setText(e.target.value)}
+        value={text} />
         <div className="send">
-          <img src="" alt="abc" />
+        <i className="fas fa-thin fa-image"></i>
           <input type="file" style={{ display: "none" }} id="file" onChange={(e) => setImg(e.target.files[0])} />
-          <label htmlFor='file'>
-            <img src="" alt="Attachment" />
+          <label htmlFor='file' style={{cursor:"pointer"}}>
+          <i className="fas fa-thin fa-paperclip"></i>
           </label>
           <button onClick={onSend}>Send</button>
         </div>

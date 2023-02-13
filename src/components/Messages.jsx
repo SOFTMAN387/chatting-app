@@ -18,7 +18,7 @@ const Messages = () => {
   return (
     <>
       <div className='messages'>
-        {messages.map((msg) => {
+        {messages?.map((msg) => {
           return (<>
             <Message message={msg} key={msg.id} />
           </>)

@@ -12,9 +12,9 @@ const Chat = () => {
            {data.user?.displayName}
         </span>
         <div className="chatIcons">
-            <img src="" alt="camer" />
-            <img src="" alt="Add" />
-            <img src="" alt="More" />
+        <i className="fas fa-light fa-camera"></i>
+        <i className="fas fa-user-plus"></i>
+        <i className="fa-solid fa-ellipsis-vertical"></i>
         </div>
       
        </div>
